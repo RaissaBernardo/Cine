@@ -1,43 +1,48 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const filmesContainer = document.getElementById('filmes-container');
-    async function fetchFilmes() {
-        try {
-            const response = await fetch('http://localhost:8080/filmes');
+document.addEventListener("DOMContentLoaded", () => {
+  const filmesContainer = document.getElementById("filmes-container");
 
-            if (!response.ok) {
-                throw new Error(`Erro HTTP! Status: ${response.status}`);
-            }
+  async function fetchFilmes() {
+    try {
+      const response = await fetch("http://localhost:8080/filmes");
 
-            const filmes = await response.json(); 
-            displayFilmes(filmes); 
-        } catch (error) {
-            console.error('Erro ao buscar filmes:', error);
-            filmesContainer.innerHTML = '<p>Não foi possível carregar os filmes. Tente novamente mais tarde.</p>';
-        }
+      if (!response.ok) {
+        throw new Error(`HTTP Error! Status: ${response.status}`);
+      }
+
+      const filmes = await response.json();
+      displayFilmes(filmes);
+    } catch (error) {
+      console.error("Error fetching movies:", error);
+      filmesContainer.innerHTML =
+        "<p>Could not load movies. Please try again later.</p>";
+    }
+  }
+
+  function displayFilmes(filmes) {
+    if (filmes.length === 0) {
+      filmesContainer.innerHTML = "<p>No movies found in the catalog.</p>";
+      return;
     }
 
-    function displayFilmes(filmes) {
-        if (filmes.length === 0) {
-            filmesContainer.innerHTML = '<p>Nenhum filme encontrado no catálogo.</p>';
-            return;
-        }
+    filmesContainer.innerHTML = "";
 
-        filmesContainer.innerHTML = '';
-        filmes.forEach(filme => {
-            const filmeCard = document.createElement('div');
-            filmeCard.classList.add('filme-card');
-            const imagemFilme = document.createElement('img');
-            imagemFilme.src = filme.imagem;
-            imagemFilme.alt = `Capa do filme ${filme.nome}`;
+    filmes.forEach((filme) => {
+      const filmeCard = document.createElement("div");
+      filmeCard.classList.add("filme-card");
 
-            const tituloFilme = document.createElement('h3');
-            tituloFilme.textContent = filme.nome;
+      const imagemFilme = document.createElement("img");
+      imagemFilme.src = filme.imagemUrl;
+      imagemFilme.alt = `Movie cover for ${filme.titulo}`;
 
-            filmeCard.appendChild(imagemFilme);
-            filmeCard.appendChild(tituloFilme);
+      const tituloFilme = document.createElement("h3");
+      tituloFilme.textContent = filme.titulo;
 
-            filmesContainer.appendChild(filmeCard);
-        });
-    }
-    fetchFilmes();
+      filmeCard.appendChild(imagemFilme);
+      filmeCard.appendChild(tituloFilme);
+
+      filmesContainer.appendChild(filmeCard);
+    });
+  }
+
+  fetchFilmes();
 });
