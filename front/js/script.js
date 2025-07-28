@@ -6,21 +6,21 @@ document.addEventListener("DOMContentLoaded", () => {
       const response = await fetch("http://localhost:8080/filmes");
 
       if (!response.ok) {
-        throw new Error(`HTTP Error! Status: ${response.status}`);
+        throw new Error(`Erro HTTP! Status: ${response.status}`);
       }
 
       const filmes = await response.json();
       displayFilmes(filmes);
     } catch (error) {
-      console.error("Error fetching movies:", error);
+      console.error("Erro ao buscar filmes:", error);
       filmesContainer.innerHTML =
-        "<p>Could not load movies. Please try again later.</p>";
+        "<p>Não foi possível carregar os filmes. Tente novamente mais tarde.</p>";
     }
   }
 
   function displayFilmes(filmes) {
     if (filmes.length === 0) {
-      filmesContainer.innerHTML = "<p>No movies found in the catalog.</p>";
+      filmesContainer.innerHTML = "<p>Nenhum filme encontrado no catálogo.</p>";
       return;
     }
 
@@ -30,15 +30,26 @@ document.addEventListener("DOMContentLoaded", () => {
       const filmeCard = document.createElement("div");
       filmeCard.classList.add("filme-card");
 
+      // Cria um elemento <a> para tornar a imagem e o título clicáveis
+      const filmeLink = document.createElement("a");
+      // Define o href com a URL do trailer vinda do banco de dados
+      filmeLink.href = filme.trailerUrl;
+      // Abre o link em uma nova aba/janela
+      filmeLink.target = "_blank"; 
+      
       const imagemFilme = document.createElement("img");
       imagemFilme.src = filme.imagemUrl;
-      imagemFilme.alt = `Movie cover for ${filme.titulo}`;
+      imagemFilme.alt = `Capa do filme ${filme.titulo}`;
 
       const tituloFilme = document.createElement("h3");
       tituloFilme.textContent = filme.titulo;
 
-      filmeCard.appendChild(imagemFilme);
-      filmeCard.appendChild(tituloFilme);
+      // Anexa a imagem e o título ao link
+      filmeLink.appendChild(imagemFilme);
+      filmeLink.appendChild(tituloFilme);
+
+      // Anexa o link (que agora contém imagem e título) ao cartão do filme
+      filmeCard.appendChild(filmeLink);
 
       filmesContainer.appendChild(filmeCard);
     });
